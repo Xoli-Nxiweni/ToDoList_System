@@ -1,0 +1,104 @@
+.profileModal {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background-color: whitesmoke;
+    padding: 20px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    transform: translateX(0%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.profileModal .show {
+    transform: translateX(100%);
+    position: relative;
+}
+
+.profileModal h2 {
+    margin-bottom: 20px;
+}
+ 
+.profileModal form {
+    margin-bottom: 20px;
+}
+
+.profileModal form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+}
+.profileModal form input:focus {
+    border: 1px solid green;
+}
+
+.profileModal form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #58a63c;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.profileModal .profilePictureSection {
+    margin-bottom: 20px;
+}
+
+.profileModal .profilePictureSection input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.profileModal .profilePictureSection button {
+    width: 100%;
+    padding: 10px;
+    background-color: #58a63c;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.profileModal .closeButton {
+    background-color: #5c894c;
+    position: absolute;
+    border: none;
+    color: white;
+    padding: 15px;
+    /* width: 100%; */
+    top: 10px;
+    right: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.logoutButton {
+    margin-top: 20px;
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 10px;
+    /* width: 100%; */
+    border-radius: 4px;
+    cursor: pointer;
+}
+@media (max-width: 425px) {
+    .profileModal {
+        width: 100%;
+    }
+}
+@media (max-width: 320px) {
+    .profileModal {
+        width: 100%;
+    }
+}

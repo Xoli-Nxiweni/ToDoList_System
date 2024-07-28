@@ -1,0 +1,103 @@
+::selection{
+    background-color: aliceblue;
+    color: #5c894c;
+}
+
+.nav{
+    position: sticky;
+    top: 10px;
+    background: #5c894c;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+}
+.nav h1{
+    color: aliceblue;
+}
+::placeholder{
+    text-align: center;
+}
+.searchContainer input{
+    width: 400px;
+    height: 40px;
+    border: none;
+    outline: none;
+    padding: 15px;
+    border-radius: 10px;
+}
+.searchContainer input::placeholder{
+    text-align: center;
+}
+.userProfile{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.userProfile svg{
+    width: 50px;
+    height: 50px;
+    color: #fff;
+}
+.user{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.SignOutBtn{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width:725px) {
+    .searchContainer input{
+        width: 300px;
+        height: 20px;
+        border: none;
+        outline: none;
+        padding: 15px;
+        border-radius: 10px;
+    }
+    .nav h1{
+        font-size: 1em;
+    }
+    .userProfile svg{
+        width: 30px;
+        height: 30px;
+    }
+    .user{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #c7c7c76e;
+    }
+}
+@media (max-width:490px) {
+    .searchContainer input{
+        width: 200px;
+    }
+    ::placeholder{
+        text-align: center;
+        font-size: .7em;
+    }
+}
+@media (max-width:380px) {
+    .searchContainer input{
+        width: 150px;
+    }
+    ::placeholder{
+        text-align: center;
+        font-size: .7em;
+    }
+}
+@media (max-width:320px) {
+    .searchContainer input{
+        width: 100px;
+    }
+    ::placeholder{
+        text-align: center;
+        font-size: .7em;
+    }
+}
