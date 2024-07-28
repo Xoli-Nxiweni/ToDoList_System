@@ -14,7 +14,7 @@ let db = new sqlite3.Database('myDatabase.db', (err) => {
     if (err) {
         console.log(err.message);
     } else {
-        console.log('Connected to the database.');
+        console.log('Connected th the database.');
     }
 });
 
