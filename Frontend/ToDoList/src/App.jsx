@@ -29,7 +29,7 @@ const App = () => {
                     isSignedIn={isSignedIn} 
                     onSignOut={() => setIsSignedIn(false)} 
                     searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm} // Pass setSearchTerm here
+                    setSearchTerm={setSearchTerm}
                 />
             </nav>
             <main>
