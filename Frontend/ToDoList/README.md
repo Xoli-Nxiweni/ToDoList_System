@@ -32,28 +32,6 @@ This To-Do List application allows users to manage their tasks efficiently. It i
 - **Backend**: Node.js with Express for server-side logic.
 - **Database**: SQLite for storing user information and to-do list items.
 
-## Folder Structure
-```
-/src
-  /Components
-    /NavigationBar
-      - NavigationBar.js
-      - NavigationBar.css
-    /ToDo
-      - ToDo.js
-      - ToDo.css
-    /authComponents
-      - SignIn.js
-      - SignIn.css
-    /Loader
-      - Loader.js
-      - Loader.css
-    /userModal
-      - UserModal.js
-      - UserModal.css
-  - App.js
-  - App.css
-```
 
 ## Setup Instructions
 
@@ -63,23 +41,22 @@ This To-Do List application allows users to manage their tasks efficiently. It i
 
 ### Installation
 1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/todo-app.git
+2. 
+   git clone https://github.com/Xoli-Nxiweni/ToDoList_System
+
    cd todo-app
-   ```
+   
 
-2. **Install dependencies**:
-   ```bash
+3. **Install dependencies**:
    npm install
-   ```
 
-3. **Set up SQLite database**:
-   - Create an SQLite database and set up tables for users and to-do items.
 
 4. **Run the application**:
-   ```bash
-   npm start
-   ```
+   <!-- to run the frontend -->
+   "npm run dev" for the frontend
+
+    <!-- to run the server -->
+   "node server.js" for the backend
 
    The application will be available at `http://localhost:3000`.
 
@@ -92,10 +69,10 @@ This To-Do List application allows users to manage their tasks efficiently. It i
    - Use your credentials to log in on the Login page.
 
 3. **Manage To-Do Items**:
-   - **Add a Task**: Enter a task description and select a priority level to add a new item.
-   - **Search Tasks**: Use the search bar to filter tasks by keyword.
-   - **Update a Task**: Edit task details including the description and priority.
-   - **Delete a Task**: Remove items from the list.
+   - *Add a Task*: Enter a task description and select a priority level to add a new item.
+   - *Search Tasks*: Use the search bar to filter tasks by keyword.
+   - *Update a Task*: Edit task details including the description and priority.
+   - *Delete a Task*: Remove items from the list.
 
 ## Validation
 - Ensure proper validation for input fields to prevent errors:
