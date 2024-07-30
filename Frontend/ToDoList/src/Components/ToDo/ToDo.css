@@ -79,18 +79,18 @@
 }
 
 .functions input:focus {
-    border: 1px solid green;
+    border: 1px solid #5c894c;
 }
 
 .functions button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: green;
+    background: #5c894c;
     border: none;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 15px;
+    padding: 2px;
+    border-radius: 10px;
 }
 
 .functionIcon {

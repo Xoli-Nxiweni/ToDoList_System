@@ -1,4 +1,3 @@
-
 import './UserModal.css';
 import { useState } from 'react';
 import axios from 'axios';
@@ -37,12 +36,21 @@ const UserModal = ({ onClose, onLogout }) => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3004/updatePassword', { username, password });
-            if (response.data.success) {
-                setMessage('Password updated successfully!');
-                setError('');
+            // Fetch the user by username
+            const userResponse = await axios.get(`http://localhost:3004/users?username=${username}`);
+            const user = userResponse.data[0]; // Assuming unique username
+
+            if (user) {
+                // Update the user's password
+                const response = await axios.patch(`http://localhost:3004/users/${user.id}`, { password });
+                if (response.data) {
+                    setMessage('Password updated successfully!');
+                    setError('');
+                } else {
+                    setError('Failed to update password.');
+                }
             } else {
-                setError('Failed to update password.');
+                setError('User not found.');
             }
         } catch (err) {
             setError('An error occurred while updating the password.');
@@ -56,23 +64,36 @@ const UserModal = ({ onClose, onLogout }) => {
             return;
         }
 
-        const formData = new FormData();
-        formData.append('profilePicture', profilePicture);
+        // Upload profile picture to an image hosting service and get URL
+        // For the sake of this example, assume the URL is obtained
+        const profilePictureUrl = 'http://example.com/path/to/uploaded/image.jpg'; // Replace with actual URL
+
+        const username = localStorage.getItem('username'); // Ensure this line retrieves the username
+
+        if (!username) {
+            setError('No username found. Please log in again.');
+            return;
+        }
 
         try {
-            const response = await axios.post('http://localhost:3004/upload-profile-picture', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+            // Fetch the user by username
+            const userResponse = await axios.get(`http://localhost:3004/users?username=${username}`);
+            const user = userResponse.data[0]; // Assuming unique username
+
+            if (user) {
+                // Update the user's profile picture URL
+                const response = await axios.patch(`http://localhost:3004/users/${user.id}`, { profilePicture: profilePictureUrl });
+                if (response.data) {
+                    setMessage('Profile picture uploaded successfully');
+                    setError('');
+                } else {
+                    setError('Failed to upload profile picture.');
                 }
-            });
-            if (response.data.success) {
-                setMessage('Profile picture uploaded successfully');
-                setError('');
             } else {
-                setError('Failed to upload profile picture.');
+                setError('User not found.');
             }
         } catch (error) {
-            setError('Error uploading profile picture.');
+            setError('An error occurred while uploading the profile picture.');
             console.error('Error uploading profile picture:', error);
         }
     };
@@ -81,7 +102,7 @@ const UserModal = ({ onClose, onLogout }) => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('username'); // Clear username on logout
         onLogout();
-        location.reload();
+        window.location.reload(); // Reload the page to reset app state
     };
 
     return (

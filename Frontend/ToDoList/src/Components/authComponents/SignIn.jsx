@@ -1,4 +1,3 @@
-
 import './SignIn.css';
 import { useState, useEffect } from 'react';
 import { FaUserAlt, FaLock, FaUnlock } from "react-icons/fa";
@@ -36,11 +35,10 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
         simulateLoading(true);
-    
+
         if (!validateEmail(username)) {
-            setError('username or password errors');
+            setError('Invalid email format');
             simulateLoading(false);
             return;
         }
@@ -51,39 +49,46 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
             return;
         }
 
-        if (isRegistered) {
-            if (password !== repeatPassword) {
-                setError('Passwords do not match!');
-                simulateLoading(false);
-                return;
-            }
-    
-            try {
-                const response = await axios.post('http://localhost:3004/register', { username, password });
-                if (response.data.success) {
-                    setMessage('Registration successful! Please sign in.');
-                    setIsRegistered(false);
-                } else {
-                    setError('Registration failed');
+        try {
+            if (isRegistered) {
+                if (password !== repeatPassword) {
+                    setError('Passwords do not match!');
+                    simulateLoading(false);
+                    return;
                 }
-            } catch (err) {
-                setError(`An error occurred during registration: ${err.message}`);
-                console.error('Error during registration:', err);
-            }
-        } else {
-            try {
-                const response = await axios.post('http://localhost:3004/signin', { username, password });
-                if (response.data.success) {
-                    localStorage.setItem('authToken', 'yourToken'); 
+
+                // Register user logic (simplified)
+                const response = await axios.get(`http://localhost:3004/users?username=${username}`);
+                if (response.data.length > 0) {
+                    setError('User already exists');
+                    simulateLoading(false);
+                    return;
+                }
+
+                const newUser = {
+                    username,
+                    password,
+                    tasks: []
+                };
+                await axios.post('http://localhost:3004/users', newUser);
+                setMessage('Registration successful! Please sign in.');
+                setIsRegistered(false);
+            } else {
+                // Sign in user logic
+                const response = await axios.get(`http://localhost:3004/users?username=${username}&password=${password}`);
+                if (response.data.length > 0) {
+                    const user = response.data[0];
+                    localStorage.setItem('authToken', user.id); 
+                    localStorage.setItem('user', JSON.stringify(user)); 
                     setMessage('Sign-in successful!');
                     onSignIn(true);
                 } else {
                     setError('Sign-in failed');
                 }
-            } catch (err) {
-                setError(`An error occurred during sign-in: ${err.message}`);
-                console.error('Error during sign-in:', err);
             }
+        } catch (err) {
+            setError(`An error occurred: ${err.message}`);
+            console.error('Error:', err);
         }
 
         simulateLoading(false);
@@ -102,7 +107,6 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
                             placeholder='Email'
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            
                         />
                     </div>
                     <div className="inputContainer">
@@ -113,7 +117,6 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
                             placeholder='Password'
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            
                         />
                     </div>
                     {isRegistered && (
@@ -125,7 +128,6 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
                                 placeholder='Repeat Password'
                                 value={repeatPassword}
                                 onChange={(e) => setRepeatPassword(e.target.value)}
-                                
                             />
                         </div>
                     )}

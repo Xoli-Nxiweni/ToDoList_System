@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "117b",
+      "username": "admin@google.com",
+      "password": "password123",
+      "tasks": [
+        {
+          "task": "g0[",
+          "taskDate": "",
+          "priority": "medium",
+          "completed": false,
+          "id": 1722339357178
+        },
+        {
+          "task": "g08p",
+          "taskDate": "",
+          "priority": "low",
+          "completed": false,
+          "id": 1722339359783
+        },
+        {
+          "task": "nmngbnmnhnm",
+          "taskDate": "",
+          "priority": null,
+          "completed": false,
+          "id": 1722340044142
+        }
+      ]
+    }
+  ]
+}
