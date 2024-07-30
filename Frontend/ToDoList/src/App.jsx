@@ -7,7 +7,7 @@ import SignIn from './Components/authComponents/SignIn';
 import Loader from './Components/Loader/Loader';
 
 const App = () => {
-    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [isSignedIn, setIsSignedIn] = useState(true);
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
