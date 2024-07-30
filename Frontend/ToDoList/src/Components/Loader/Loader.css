@@ -1,7 +1,7 @@
 
 /* Container for the loader */
 .loader-container {
-    position: fixed; /* Fixed positioning for the overlay */
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
@@ -10,8 +10,8 @@
     justify-content: center;
     backdrop-filter: blur(5px);
     align-items: center;
-    background: rgba(133, 133, 133, 0.616); /* Semi-transparent background */
-    z-index: 1000; /* Ensure it appears above other content */
+    background: rgba(133, 133, 133, 0.616); 
+    z-index: 1000; 
 }
 
 /* Expanding Circle Animation */
