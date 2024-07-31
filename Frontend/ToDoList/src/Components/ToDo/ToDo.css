@@ -79,18 +79,18 @@
 }
 
 .functions input:focus {
-    border: 1px solid green;
+    border: 1px solid #5c894c;
 }
 
 .functions button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: green;
+    background: #5c894c;
     border: none;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 15px;
+    padding: 2px;
+    border-radius: 10px;
 }
 
 .functionIcon {
@@ -103,24 +103,16 @@
     gap: 10px;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid gray;
+    border: 2px solid gray;
     border-radius: 15px;
     margin: 10px 0;
     padding: 10px;
     width: 100%;
+    transition: all .2s linear;
 }
-.editTasks .Tasks div:first-child {
-    /* display: flex; */
-    flex-wrap: wrap;
-    /* background: #ff0000; */
-}
-.editTasks .Tasks div p{
-    overflow-x: auto;
-    /* background: #ff0000; */
-}
+.editTasks .Tasks div p,
 .editTasks .Tasks div h6{
     overflow-x: auto;
-    /* background: #ff0000; */
 }
 
 .editTasks .Tasks.low {

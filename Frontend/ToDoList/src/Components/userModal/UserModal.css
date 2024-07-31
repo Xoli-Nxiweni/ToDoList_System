@@ -37,7 +37,7 @@
     outline: none;
 }
 .profileModal form input:focus {
-    border: 1px solid green;
+    border: 1px solid #5c894c;
 }
 
 .profileModal form button {
@@ -82,7 +82,8 @@
     cursor: pointer;
 }
 
-.logoutButton {
+.logoutButton, 
+.deleteButton {
     margin-top: 20px;
     background-color: #dc3545;
     border: none;

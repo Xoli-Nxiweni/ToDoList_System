@@ -5,7 +5,7 @@
 
 .nav{
     position: sticky;
-    top: 10px;
+    top: 0px;
     background: #5c894c;
     display: flex;
     width: 100%;

@@ -1,6 +1,7 @@
 
+
 import './UserModal.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // eslint-disable-next-line react/prop-types
@@ -10,18 +11,36 @@ const UserModal = ({ onClose, onLogout }) => {
     const [profilePicture, setProfilePicture] = useState(null);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [username, setUsername] = useState('');
 
-    const handlePasswordChange = (e) => {
-        setPassword(e.target.value);
+    // Fetch the username from JSON Server using the auth token
+    const fetchUsername = async () => {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            setError('No authentication token found. Please log in again.');
+            return;
+        }
+
+        try {
+            const response = await axios.get(`http://localhost:3004/users?authToken=${token}`);
+            if (response.data.length > 0) {
+                setUsername(response.data[0].username); // Adjust based on your response structure
+            } else {
+                setError('User not found.');
+            }
+        } catch (err) {
+            setError('An error occurred while fetching user data.');
+            console.error('Error fetching user:', err);
+        }
     };
 
-    const handleRepeatPasswordChange = (e) => {
-        setRepeatPassword(e.target.value);
-    };
+    useEffect(() => {
+        fetchUsername();
+    }, []);
 
-    const handleProfilePictureChange = (e) => {
-        setProfilePicture(e.target.files[0]);
-    };
+    const handlePasswordChange = (e) => setPassword(e.target.value);
+    const handleRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
+    const handleProfilePictureChange = (e) => setProfilePicture(e.target.files[0]);
 
     const handlePasswordUpdate = async () => {
         if (password !== repeatPassword) {
@@ -29,20 +48,21 @@ const UserModal = ({ onClose, onLogout }) => {
             return;
         }
 
-        const username = localStorage.getItem('username'); // Ensure this line retrieves the username
-
         if (!username) {
             setError('No username found. Please log in again.');
             return;
         }
 
         try {
-            const response = await axios.post('http://localhost:3004/updatePassword', { username, password });
-            if (response.data.success) {
+            const userResponse = await axios.get(`http://localhost:3004/users?username=${username}`);
+            const user = userResponse.data[0]; // Assuming unique username
+
+            if (user) {
+                await axios.patch(`http://localhost:3004/users/${user.id}`, { password });
                 setMessage('Password updated successfully!');
                 setError('');
             } else {
-                setError('Failed to update password.');
+                setError('User not found.');
             }
         } catch (err) {
             setError('An error occurred while updating the password.');
@@ -56,32 +76,65 @@ const UserModal = ({ onClose, onLogout }) => {
             return;
         }
 
+        const uploadUrl = 'http://example.com/upload'; // Replace with actual upload URL
         const formData = new FormData();
-        formData.append('profilePicture', profilePicture);
+        formData.append('file', profilePicture);
 
         try {
-            const response = await axios.post('http://localhost:3004/upload-profile-picture', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+            const uploadResponse = await axios.post(uploadUrl, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
-            if (response.data.success) {
+            const profilePictureUrl = uploadResponse.data.url;
+
+            if (!username) {
+                setError('No username found. Please log in again.');
+                return;
+            }
+
+            const userResponse = await axios.get(`http://localhost:3004/users?username=${username}`);
+            const user = userResponse.data[0]; // Assuming unique username
+
+            if (user) {
+                await axios.patch(`http://localhost:3004/users/${user.id}`, { profilePicture: profilePictureUrl });
                 setMessage('Profile picture uploaded successfully');
                 setError('');
             } else {
-                setError('Failed to upload profile picture.');
+                setError('User not found.');
             }
-        } catch (error) {
-            setError('Error uploading profile picture.');
-            console.error('Error uploading profile picture:', error);
+        } catch (err) {
+            setError('An error occurred while uploading the profile picture.');
+            console.error('Error uploading profile picture:', err);
         }
     };
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
-        localStorage.removeItem('username'); // Clear username on logout
+        localStorage.removeItem('username');
         onLogout();
-        location.reload();
+        window.location.reload(); // Reload the page to reset app state
+    };
+
+    const handleDeleteAccount = async () => {
+        if (!username) {
+            setError('No username found. Please log in again.');
+            return;
+        }
+
+        try {
+            const userResponse = await axios.get(`http://localhost:3004/users?username=${username}`);
+            const user = userResponse.data[0]; // Assuming unique username
+
+            if (user) {
+                await axios.delete(`http://localhost:3004/users/${user.id}`);
+                handleLogout(); 
+            } else {
+                setError('User not found.');
+                console.log(`User not found.`);
+            }
+        } catch (err) {
+            setError('An error occurred while deleting the account.');
+            console.error('Error deleting account:', err);
+        }
     };
 
     return (
@@ -112,6 +165,7 @@ const UserModal = ({ onClose, onLogout }) => {
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <button className="closeButton" onClick={onClose}>Close</button>
             <button className="logoutButton" onClick={handleLogout}>Logout</button>
+            <button className="deleteButton" onClick={handleDeleteAccount}>Delete Account</button>
         </div>
     );
 };
