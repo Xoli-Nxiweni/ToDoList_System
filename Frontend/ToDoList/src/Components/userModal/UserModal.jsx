@@ -1,8 +1,7 @@
-
-
 import './UserModal.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
 // eslint-disable-next-line react/prop-types
 const UserModal = ({ onClose, onLogout }) => {
@@ -139,7 +138,7 @@ const UserModal = ({ onClose, onLogout }) => {
 
     return (
         <div className="profileModal show">
-            <h2>Edit Profile</h2>
+            <h2>{username}</h2>
             <form>
                 <input
                     type="password"
@@ -163,7 +162,7 @@ const UserModal = ({ onClose, onLogout }) => {
             </div>
             {message && <p style={{ color: 'green' }}>{message}</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <button className="closeButton" onClick={onClose}>Close</button>
+            <button className="closeButton" onClick={onClose}><AccountCircleOutlinedIcon/></button>
             <button className="logoutButton" onClick={handleLogout}>Logout</button>
             <button className="deleteButton" onClick={handleDeleteAccount}>Delete Account</button>
         </div>

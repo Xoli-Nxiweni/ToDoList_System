@@ -40,18 +40,21 @@
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
 .operations button:nth-child(2) {
     background: #ffa500;
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
 .operations button:nth-child(3) {
     background: #ff0000;
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
 
 .addingTasks h1, .editTasks h1 {
@@ -62,6 +65,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    
 }
 
 .functions input:nth-child(1) {
@@ -70,12 +74,14 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.37);
 }
 .functions input:nth-child(2){
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.37);
 }
 
 .functions input:focus {
@@ -91,6 +97,7 @@
     cursor: pointer;
     padding: 2px;
     border-radius: 10px;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
 
 .functionIcon {
@@ -109,6 +116,7 @@
     padding: 10px;
     width: 100%;
     transition: all .2s linear;
+    box-shadow: 1px 1px 5 px rgba(0, 0, 0, 0.37);
 }
 .editTasks .Tasks div p,
 .editTasks .Tasks div h6{
@@ -159,22 +167,24 @@
     border-radius: 5px;
     background: rgba(128, 128, 128, 0.356);
     outline: none;
+    border: none;
     transition: all .4s ease-in-out;
+    box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.37);
 }
 
 
 @media (max-width:768px) {
     .operations button:nth-child(1) {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
     }
     .operations button:nth-child(2) {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
     }
     .operations button:nth-child(3) {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
     }
     .operations{
         gap: 5px;
@@ -184,14 +194,13 @@
     }
     .operations button svg {
         color: #fff;
-        font-size: 1.2em;
+        font-size: 1.5em;
     }
     .priority select {
-        padding: 2;
+        padding: 4px;
     }
     .functions input:nth-child(2){
         padding: 10px;
-        flex: 1;
         border: 1px solid #ccc;
         border-radius: 5px;
         outline: none;
@@ -213,13 +222,28 @@
         font-size: 1em;
     }
     .editTasks .Tasks div p{
-        font-size: .7em;
+        font-size: .75em;
     }
     .editTasks .Tasks div h6{
         font-size: .5em;
     }
     .priority select {
         padding: 3px 5px;
-        font-size: .5em;
+        border: none;
+    }
+}
+@media (max-width:468px) {
+    .functions input:nth-child(1) {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+    }
+    .functions input:nth-child(2){
+        padding: 10px;
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
     }
 }

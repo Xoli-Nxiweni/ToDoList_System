@@ -1,16 +1,16 @@
 {
   "users": [
     {
-      "id": "ca3a",
-      "username": "admin@admin.com",
-      "password": "admin123",
+      "id": "ad13",
+      "username": "xoli@gmail.com",
+      "password": "password123",
       "tasks": [
         {
-          "task": "adding the admin",
-          "taskDate": "",
-          "priority": "low",
-          "completed": true,
-          "id": 1722507714712
+          "task": "lets discuss the next project",
+          "taskDate": "2024-08-02",
+          "priority": "",
+          "completed": false,
+          "id": 1722588507911
         }
       ]
     }
