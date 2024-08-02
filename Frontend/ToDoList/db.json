@@ -1,3 +1,18 @@
 {
-  "users": []
+  "users": [
+    {
+      "id": "ca3a",
+      "username": "admin@admin.com",
+      "password": "admin123",
+      "tasks": [
+        {
+          "task": "adding the admin",
+          "taskDate": "",
+          "priority": "low",
+          "completed": true,
+          "id": 1722507714712
+        }
+      ]
+    }
+  ]
 }
