@@ -4,7 +4,6 @@
     align-items: center;
     padding: 20px 0;
 }
-
 .addingTasks, .editTasks {
     width: 90%;
     background: #fff;
@@ -40,125 +39,109 @@
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
 .operations button:nth-child(2) {
-    background: #ffa500;
+    background: #FFA500;
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
 .operations button:nth-child(3) {
-    background: #ff0000;
+    background: #FF0000;
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
-
 .addingTasks h1, .editTasks h1 {
     margin-bottom: 20px;
 }
-
 .functions {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-
 .functions input:nth-child(1) {
     flex: 1;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.37);
 }
 .functions input:nth-child(2){
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.37);
 }
-
 .functions input:focus {
-    border: 1px solid green;
+    border: 1px solid #5C894C;
 }
-
 .functions button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: green;
+    background: #5C894C;
     border: none;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 15px;
+    padding: 2px;
+    border-radius: 10px;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.37);
 }
-
 .functionIcon {
     font-size: 40px;
-    color: #ffffff;
+    color: #FFFFFF;
 }
-
 .editTasks .Tasks {
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid gray;
+    border: 2px solid gray;
     border-radius: 15px;
     margin: 10px 0;
     padding: 10px;
     width: 100%;
+    transition: all .2s linear;
+    box-shadow: 1px 1px 5 px rgba(0, 0, 0, 0.37);
 }
-.editTasks .Tasks div:first-child {
-    /* display: flex; */
-    flex-wrap: wrap;
-    /* background: #ff0000; */
-}
-.editTasks .Tasks div p{
-    overflow-x: auto;
-    /* background: #ff0000; */
-}
+.editTasks .Tasks div p,
 .editTasks .Tasks div h6{
     overflow-x: auto;
-    /* background: #ff0000; */
 }
-
 .editTasks .Tasks.low {
     background: #00800046;
     border: 2px solid green;
 }
-
 .editTasks .Tasks.medium {
     background: rgba(255, 166, 0, 0.274);
     border: 2px solid orange;
 }
-
 .editTasks .Tasks.high {
     background: rgba(255, 0, 0, 0.274);
     border: 2px solid red;
 }
-
 .editTasks .Tasks h3 {
     margin: 0;
     font-size: 18px;
 }
-
 .editTasks .Tasks h6 {
     margin: 0;
     color: #888;
 }
-
 .taskIcon {
     margin-right: 10px;
     cursor: pointer;
 }
-
 .priority {
     display: flex;
     gap: 10px;
     align-items: center;
 }
-
 .priority select {
     padding: 4px 0;
     text-align: center;
@@ -167,22 +150,22 @@
     border-radius: 5px;
     background: rgba(128, 128, 128, 0.356);
     outline: none;
+    border: none;
     transition: all .4s ease-in-out;
+    box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.37);
 }
-
-
 @media (max-width:768px) {
     .operations button:nth-child(1) {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
     }
     .operations button:nth-child(2) {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
     }
     .operations button:nth-child(3) {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
     }
     .operations{
         gap: 5px;
@@ -192,14 +175,13 @@
     }
     .operations button svg {
         color: #fff;
-        font-size: 1.2em;
+        font-size: 1.5em;
     }
     .priority select {
-        padding: 2;
+        padding: 4px;
     }
     .functions input:nth-child(2){
         padding: 10px;
-        flex: 1;
         border: 1px solid #ccc;
         border-radius: 5px;
         outline: none;
@@ -208,7 +190,6 @@
         font-size: 1em;
     }
 }
-
 @media (max-width:585px) {
     .functions{
         flex-wrap: wrap;
@@ -221,13 +202,28 @@
         font-size: 1em;
     }
     .editTasks .Tasks div p{
-        font-size: .7em;
+        font-size: .75em;
     }
     .editTasks .Tasks div h6{
         font-size: .5em;
     }
     .priority select {
         padding: 3px 5px;
-        font-size: .5em;
+        border: none;
+    }
+}
+@media (max-width:468px) {
+    .functions input:nth-child(1) {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+    }
+    .functions input:nth-child(2){
+        padding: 10px;
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
     }
 }

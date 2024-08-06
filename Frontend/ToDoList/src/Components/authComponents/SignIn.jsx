@@ -1,8 +1,7 @@
-
 import './SignIn.css';
 import { useState, useEffect } from 'react';
 import { FaUserAlt, FaLock, FaUnlock } from "react-icons/fa";
-import axios from 'axios';
+import { initializeDb, addUser, authenticateUser } from '../../Db';
 
 // eslint-disable-next-line react/prop-types
 const SignIn = ({ onSignIn, simulateLoading }) => {
@@ -20,6 +19,10 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
         }
     }, [onSignIn]);
 
+    useEffect(() => {
+        initializeDb().then(() => console.log('Database initialized'));
+    }, []);
+
     const toggleForm = () => {
         setIsRegistered(!isRegistered);
         setError('');
@@ -36,11 +39,11 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         simulateLoading(true);
-    
+
         if (!validateEmail(username)) {
-            setError('username or password errors');
+            setError('Invalid email format.');
             simulateLoading(false);
             return;
         }
@@ -57,28 +60,24 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
                 simulateLoading(false);
                 return;
             }
-    
+
             try {
-                const response = await axios.post('http://localhost:3004/register', { username, password });
-                if (response.data.success) {
-                    setMessage('Registration successful! Please sign in.');
-                    setIsRegistered(false);
-                } else {
-                    setError('Registration failed');
-                }
+                addUser(username, password);
+                setMessage('Registration successful! Please sign in.');
+                setIsRegistered(false);
             } catch (err) {
-                setError(`An error occurred during registration: ${err.message}`);
+                setError(err.message); // Show the unique constraint error message
                 console.error('Error during registration:', err);
             }
         } else {
             try {
-                const response = await axios.post('http://localhost:3004/signin', { username, password });
-                if (response.data.success) {
+                const user = authenticateUser(username, password);
+                if (user) {
                     localStorage.setItem('authToken', 'yourToken'); 
                     setMessage('Sign-in successful!');
                     onSignIn(true);
                 } else {
-                    setError('Sign-in failed');
+                    setError('Invalid username or password');
                 }
             } catch (err) {
                 setError(`An error occurred during sign-in: ${err.message}`);
@@ -102,7 +101,6 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
                             placeholder='Email'
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            
                         />
                     </div>
                     <div className="inputContainer">
@@ -113,7 +111,6 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
                             placeholder='Password'
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            
                         />
                     </div>
                     {isRegistered && (
@@ -125,7 +122,6 @@ const SignIn = ({ onSignIn, simulateLoading }) => {
                                 placeholder='Repeat Password'
                                 value={repeatPassword}
                                 onChange={(e) => setRepeatPassword(e.target.value)}
-                                
                             />
                         </div>
                     )}

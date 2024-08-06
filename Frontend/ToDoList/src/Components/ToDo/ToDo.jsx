@@ -4,24 +4,25 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { getTasks, addTask as dbAddTask, updateTask as dbUpdateTask, deleteTask as dbDeleteTask } from '../../Db';
 
-// eslint-disable-next-line react/prop-types
 const ToDo = ({ simulateLoading, searchTerm }) => {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState('');
     const [newDate, setNewDate] = useState('');
-    const [newPriority, setNewPriority] = useState('low');
+    const [newPriority, setNewPriority] = useState('');
     const [editIndex, setEditIndex] = useState(-1);
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch('http://localhost:3004/get-tasks');
-            const result = await response.json();
-            if (result.success) {
-                setTasks(result.tasks);
-            } else {
-                console.error('Failed to fetch tasks:', result.error);
-            }
+            const fetchedTasks = getTasks();
+            setTasks(fetchedTasks.map(task => ({
+                id: task[0],
+                task: task[1],
+                completed: task[2],
+                priority: task[4] || 'low',  // Assume default priority as 'low' for existing tasks
+                taskDate: task[3] || new Date().toISOString().split('T')[0]  // Default date
+            })));
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
@@ -31,69 +32,97 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
         fetchTasks();
     }, []);
 
+    // const addTask = async () => {
+    //     if (newTask.trim() === '') return;
+    //     simulateLoading(true);
+
+    //     const task = { task: newTask, taskDate: newDate, priority: newPriority, completed: false };
+
+    //     if (editIndex >= 0) {
+    //         const updatedTask = { ...task, id: tasks[editIndex].id };
+    //         try {
+    //             await dbUpdateTask(updatedTask.id, updatedTask);
+    //             const updatedTasks = tasks.map((t, index) =>
+    //                 index === editIndex ? updatedTask : t
+    //             );
+    //             setTasks(updatedTasks);
+    //             setEditIndex(-1);
+    //         } catch (error) {
+    //             console.error('Error updating task:', error);
+    //         }
+    //     } else {
+    //         try {
+    //             await dbAddTask(task.task, task.taskDate, task.priority);
+    //             fetchTasks();  // Re-fetch tasks to get the correct ID from the database
+    //         } catch (error) {
+    //             console.error('Error adding task:', error);
+    //         }
+    //     }
+
+    //     setNewTask('');
+    //     setNewDate('');
+    //     setNewPriority('');
+    //     simulateLoading(false);
+    // };
+
     const addTask = async () => {
         if (newTask.trim() === '') return;
         simulateLoading(true);
-
+    
         const task = { task: newTask, taskDate: newDate, priority: newPriority, completed: false };
-
+    
         if (editIndex >= 0) {
             const updatedTask = { ...task, id: tasks[editIndex].id };
             try {
-                const response = await fetch('http://localhost:3004/update-task', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updatedTask)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    const updatedTasks = tasks.map((t, index) =>
-                        index === editIndex ? updatedTask : t
-                    );
-                    setTasks(updatedTasks);
-                    setEditIndex(-1);
-                } else {
-                    console.error('Failed to update task:', result.error);
-                }
+                await dbUpdateTask(updatedTask.id, updatedTask);
+                const updatedTasks = tasks.map((t, index) =>
+                    index === editIndex ? updatedTask : t
+                );
+                setTasks(updatedTasks);
+                setEditIndex(-1);
             } catch (error) {
                 console.error('Error updating task:', error);
             }
         } else {
             try {
-                const response = await fetch('http://localhost:3004/add-task', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ task: newTask, taskDate: newDate })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    setTasks([...tasks, { ...task, id: result.taskID }]);
-                } else {
-                    console.error('Failed to add task:', result.error);
-                }
+                await dbAddTask(newTask, newDate, newPriority);
+                fetchTasks();  // Re-fetch tasks to get the correct ID from the database
             } catch (error) {
                 console.error('Error adding task:', error);
             }
         }
-
+    
         setNewTask('');
         setNewDate('');
-        setNewPriority('low');
+        setNewPriority('');
         simulateLoading(false);
     };
+    
 
-    const changeTaskPriority = (index, priority) => {
+    const changeTaskPriority = async (index, priority) => {
         const updatedTasks = tasks.map((task, i) =>
             i === index ? { ...task, priority } : task
         );
         setTasks(updatedTasks);
+        try {
+            const updatedTask = updatedTasks[index];
+            await dbUpdateTask(updatedTask.id, updatedTask);
+        } catch (error) {
+            console.error('Error updating task priority:', error);
+        }
     };
 
-    const toggleCompleteTask = (index) => {
+    const toggleCompleteTask = async (index) => {
         const updatedTasks = tasks.map((task, i) =>
             i === index ? { ...task, completed: !task.completed } : task
         );
         setTasks(updatedTasks);
+        try {
+            const updatedTask = updatedTasks[index];
+            await dbUpdateTask(updatedTask.id, updatedTask);
+        } catch (error) {
+            console.error('Error toggling task completion:', error);
+        }
     };
 
     const editTask = (index) => {
@@ -107,26 +136,11 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
     const deleteTask = async (index) => {
         const taskId = tasks[index].id;
         console.log(`Attempting to delete task with ID: ${taskId}`);
-    
+
         try {
-            const response = await fetch('http://localhost:3004/delete-task', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: taskId })
-            });
-            
-            if (response.ok) {
-                const result = await response.json();
-                if (result.success) {
-                    console.log('Task deleted:', taskId);
-                    const updatedTasks = tasks.filter((_, i) => i !== index);
-                    setTasks(updatedTasks);
-                } else {
-                    console.error('Failed to delete task:', result.error);
-                }
-            } else {
-                console.error('Failed to delete task. Response status:', response.status);
-            }
+            await dbDeleteTask(taskId);
+            const updatedTasks = tasks.filter((_, i) => i !== index);
+            setTasks(updatedTasks);
         } catch (error) {
             console.error('Error deleting task:', error);
         }
@@ -134,7 +148,6 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
 
     // Filter tasks based on searchTerm
     const filteredTasks = tasks.filter(task =>
-        // eslint-disable-next-line react/prop-types
         task.task.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -187,6 +200,7 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
                                     value={task.priority}
                                     onChange={(e) => changeTaskPriority(index, e.target.value)}
                                 >
+                                    <option value="">priority</option>
                                     <option value="low">low</option>
                                     <option value="medium">medium</option>
                                     <option value="high">high</option>
