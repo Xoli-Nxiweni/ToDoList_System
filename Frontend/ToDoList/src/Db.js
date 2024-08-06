@@ -317,11 +317,14 @@ export const initializeDb = async () => {
     const savedDb = localStorage.getItem('sqlite-db');
     if (savedDb) {
       db = new SQL.Database(new Uint8Array(JSON.parse(savedDb)));
-
-      // Check and add missing columns
+      console.log('Database loaded from local storage');
+      
+      // Check and add missing columns if necessary
       await addMissingColumns();
     } else {
       db = new SQL.Database();
+      console.log('New database created');
+
       db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY, 
         username TEXT UNIQUE, 
@@ -330,8 +333,8 @@ export const initializeDb = async () => {
       db.run(`CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY, 
         name TEXT, 
-        completed BOOLEAN, 
-        priority TEXT DEFAULT 'low',
+        completed TEXT, 
+        priority TEXT DEFAULT '',
         taskDate TEXT
       )`);
 
@@ -351,7 +354,7 @@ export const initializeDb = async () => {
 };
 
 // Add missing columns if they do not already exist
-const addMissingColumns = () => {
+const addMissingColumns = async () => {
   try {
     const columns = db.exec("PRAGMA table_info(tasks)");
     const columnNames = columns.length > 0 && columns[0].values ? 
@@ -374,8 +377,13 @@ const addMissingColumns = () => {
 
 // Save the database to local storage
 const saveDb = () => {
-  const data = db.export();
-  localStorage.setItem('sqlite-db', JSON.stringify(Array.from(data)));
+  try {
+    const data = db.export();
+    localStorage.setItem('sqlite-db', JSON.stringify(Array.from(data)));
+    console.log('Database saved to local storage');
+  } catch (error) {
+    console.error('Failed to save database:', error.message);
+  }
 };
 
 // Add a new user
@@ -417,16 +425,6 @@ export const authenticateUser = (username, password) => {
   return null;
 };
 
-// Get all tasks
-// export const getTasks = () => {
-//   try {
-//     const result = db.exec('SELECT * FROM tasks');
-//     return result[0]?.values || [];
-//   } catch (error) {
-//     console.error('Error retrieving tasks:', error.message);
-//   }
-// };
-
 // Add a new task
 export const addTask = (name, taskDate = '', priority = 'low') => {
   if (typeof name !== 'string' || typeof taskDate !== 'string' || typeof priority !== 'string') {
@@ -444,44 +442,22 @@ export const addTask = (name, taskDate = '', priority = 'low') => {
 };
 
 // Update an existing task
-// src/Db.js
-
-// Update an existing task
-// export const updateTask = (id, updatedTask) => {
-//   if (!updatedTask || typeof updatedTask !== 'object') {
-//     console.error('Update task failed: updatedTask is invalid or undefined');
-//     return;
-//   }
-
-//   console.log('Updating task:', { id, updatedTask });
-
-//   try {
-//     db.run('UPDATE tasks SET name = ?, completed = ?, taskDate = ?, priority = ? WHERE id = ?', 
-//       [updatedTask.name, updatedTask.completed, updatedTask.taskDate, updatedTask.priority, id]);
-//     saveDb();
-    
-//     // Verify the update
-//     const updated = db.exec('SELECT * FROM tasks WHERE id = ?', [id]);
-//     console.log('Updated task:', updated);
-    
-//   } catch (error) {
-//     console.error(`Error updating task: ${error.message}`);
-//   }
-// };
 
 export const updateTask = (id, updatedTask) => {
   if (!updatedTask || typeof updatedTask !== 'object') {
-    console.error('Update task failed: updatedTask is invalid or undefined');
+    console.error('Updating the task error: Invalid updatedTask object');
     return;
   }
 
   console.log('Updating task:', { id, updatedTask });
 
+  let stmt;
+
   try {
-    db.run('UPDATE tasks SET name = ?, completed = ?, taskDate = ?, priority = ? WHERE id = ?', 
-      [updatedTask.name, updatedTask.completed ? 1 : 0, updatedTask.taskDate, updatedTask.priority, id]);
-    saveDb();
-    
+    // Ensure the column names match your table schema
+    stmt = db.prepare('UPDATE tasks SET name = ?, completed = ?, taskDate = ?, priority = ? WHERE id = ?');
+    stmt.run([updatedTask.name || '', updatedTask.completed ? 1 : 0, updatedTask.taskDate || '', updatedTask.priority || '', id]);
+
     // Verify the update
     const updated = db.exec('SELECT * FROM tasks WHERE id = ?', [id]);
     if (updated.length > 0 && updated[0].values.length > 0) {
@@ -489,16 +465,24 @@ export const updateTask = (id, updatedTask) => {
     } else {
       console.error('Task update verification failed: No task found with the given ID');
     }
-    
+
+    // Save changes within the try block
+    saveDb();
+
   } catch (error) {
-    console.error(`Error updating task: ${error.message}`);
+    if (error instanceof Error) {
+      console.error(`Error updating task: ${error.message}`);
+    } else {
+      console.error('Unknown error updating task:', error);
+    }
+  } finally {
+    if (stmt) stmt.free();
   }
 };
 
 
 
-
-// Function to get all tasks for debugging
+// Get all tasks for debugging
 export const getTasks = () => {
   try {
     const result = db.exec('SELECT * FROM tasks');
@@ -509,7 +493,6 @@ export const getTasks = () => {
   }
 };
 
-
 // Delete a task
 export const deleteTask = (id) => {
   try {
@@ -519,3 +502,4 @@ export const deleteTask = (id) => {
     console.error('Error deleting task:', error.message);
   }
 };
+

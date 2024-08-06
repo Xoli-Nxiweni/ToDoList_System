@@ -4,8 +4,9 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { getTasks, addTask as dbAddTask, updateTask as dbUpdateTask, deleteTask as dbDeleteTask } from '../../Db';
+import { initializeDb, getTasks, addTask, updateTask, deleteTask } from '../../Db';
 
+// eslint-disable-next-line react/prop-types
 const ToDo = ({ simulateLoading, searchTerm }) => {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState('');
@@ -13,119 +14,78 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
     const [newPriority, setNewPriority] = useState('');
     const [editIndex, setEditIndex] = useState(-1);
 
-    const fetchTasks = async () => {
-        try {
-            const fetchedTasks = getTasks();
-            setTasks(fetchedTasks.map(task => ({
-                id: task[0],
-                task: task[1],
-                completed: task[2],
-                priority: task[4] || 'low',  // Assume default priority as 'low' for existing tasks
-                taskDate: task[3] || new Date().toISOString().split('T')[0]  // Default date
-            })));
-        } catch (error) {
-            console.error('Error fetching tasks:', error);
-        }
-    };
-
     useEffect(() => {
+        const fetchTasks = async () => {
+            await initializeDb(); // Initialize DB
+            const tasksFromDb = getTasks(); // Fetch tasks
+            setTasks(tasksFromDb.map(([id, task, completed, priority, taskDate]) => ({
+                id,
+                task,
+                taskDate,
+                priority,
+                completed: Boolean(completed)
+            })));
+        };
         fetchTasks();
     }, []);
 
-    // const addTask = async () => {
-    //     if (newTask.trim() === '') return;
-    //     simulateLoading(true);
-
-    //     const task = { task: newTask, taskDate: newDate, priority: newPriority, completed: false };
-
-    //     if (editIndex >= 0) {
-    //         const updatedTask = { ...task, id: tasks[editIndex].id };
-    //         try {
-    //             await dbUpdateTask(updatedTask.id, updatedTask);
-    //             const updatedTasks = tasks.map((t, index) =>
-    //                 index === editIndex ? updatedTask : t
-    //             );
-    //             setTasks(updatedTasks);
-    //             setEditIndex(-1);
-    //         } catch (error) {
-    //             console.error('Error updating task:', error);
-    //         }
-    //     } else {
-    //         try {
-    //             await dbAddTask(task.task, task.taskDate, task.priority);
-    //             fetchTasks();  // Re-fetch tasks to get the correct ID from the database
-    //         } catch (error) {
-    //             console.error('Error adding task:', error);
-    //         }
-    //     }
-
-    //     setNewTask('');
-    //     setNewDate('');
-    //     setNewPriority('');
-    //     simulateLoading(false);
-    // };
-
-    const addTask = async () => {
+    const handleAddOrUpdateTask = async () => {
         if (newTask.trim() === '') return;
         simulateLoading(true);
-    
-        const task = { task: newTask, taskDate: newDate, priority: newPriority, completed: false };
-    
+
         if (editIndex >= 0) {
-            const updatedTask = { ...task, id: tasks[editIndex].id };
-            try {
-                await dbUpdateTask(updatedTask.id, updatedTask);
-                const updatedTasks = tasks.map((t, index) =>
-                    index === editIndex ? updatedTask : t
-                );
-                setTasks(updatedTasks);
-                setEditIndex(-1);
-            } catch (error) {
-                console.error('Error updating task:', error);
-            }
+            const task = tasks[editIndex];
+            updateTask(task.id, {
+                name: newTask,
+                taskDate: newDate,
+                priority: newPriority,
+                completed: task.completed
+            });
+            const updatedTasks = tasks.map((t, index) =>
+                index === editIndex ? { ...t, task: newTask, taskDate: newDate, priority: newPriority } : t
+            );
+            setTasks(updatedTasks);
+            setEditIndex(-1);
         } else {
-            try {
-                await dbAddTask(newTask, newDate, newPriority);
-                fetchTasks();  // Re-fetch tasks to get the correct ID from the database
-            } catch (error) {
-                console.error('Error adding task:', error);
-            }
+            const newTaskId = await addTask(newTask, newDate, newPriority);
+            setTasks([...tasks, { id: newTaskId, task: newTask, taskDate: newDate, priority: newPriority, completed: false }]);
         }
-    
+
         setNewTask('');
         setNewDate('');
         setNewPriority('');
         simulateLoading(false);
     };
-    
 
-    const changeTaskPriority = async (index, priority) => {
-        const updatedTasks = tasks.map((task, i) =>
-            i === index ? { ...task, priority } : task
+    const handleChangeTaskPriority = async (index, priority) => {
+        const task = tasks[index];
+        updateTask(task.id, {
+            name: task.task,
+            taskDate: task.taskDate,
+            priority,
+            completed: task.completed
+        });
+        const updatedTasks = tasks.map((t, i) =>
+            i === index ? { ...t, priority } : t
         );
         setTasks(updatedTasks);
-        try {
-            const updatedTask = updatedTasks[index];
-            await dbUpdateTask(updatedTask.id, updatedTask);
-        } catch (error) {
-            console.error('Error updating task priority:', error);
-        }
     };
 
-    const toggleCompleteTask = async (index) => {
-        const updatedTasks = tasks.map((task, i) =>
-            i === index ? { ...task, completed: !task.completed } : task
+    const handleToggleCompleteTask = async (index) => {
+        const task = tasks[index];
+        updateTask(task.id, {
+            name: task.task,
+            taskDate: task.taskDate,
+            priority: task.priority,
+            completed: !task.completed
+        });
+        const updatedTasks = tasks.map((t, i) =>
+            i === index ? { ...t, completed: !t.completed } : t
         );
         setTasks(updatedTasks);
-        try {
-            const updatedTask = updatedTasks[index];
-            await dbUpdateTask(updatedTask.id, updatedTask);
-        } catch (error) {
-            console.error('Error toggling task completion:', error);
-        }
     };
 
-    const editTask = (index) => {
+    const handleEditTask = (index) => {
         const task = tasks[index];
         setEditIndex(index);
         setNewTask(task.task);
@@ -133,21 +93,15 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
         setNewPriority(task.priority);
     };
 
-    const deleteTask = async (index) => {
+    const handleDeleteTask = async (index) => {
         const taskId = tasks[index].id;
-        console.log(`Attempting to delete task with ID: ${taskId}`);
-
-        try {
-            await dbDeleteTask(taskId);
-            const updatedTasks = tasks.filter((_, i) => i !== index);
-            setTasks(updatedTasks);
-        } catch (error) {
-            console.error('Error deleting task:', error);
-        }
+        deleteTask(taskId);
+        const updatedTasks = tasks.filter((_, i) => i !== index);
+        setTasks(updatedTasks);
     };
 
-    // Filter tasks based on searchTerm
     const filteredTasks = tasks.filter(task =>
+        // eslint-disable-next-line react/prop-types
         task.task.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -168,7 +122,7 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
                         value={newDate}
                         onChange={(e) => setNewDate(e.target.value)}
                     />
-                    <button onClick={addTask}>
+                    <button onClick={handleAddOrUpdateTask}>
                         <IoIosAddCircleOutline className='functionIcon' />
                     </button>
                 </div>
@@ -185,20 +139,20 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
                         </div>
                         <div className="Ops">
                             <div className="operations">
-                                <button onClick={() => toggleCompleteTask(index)}>
+                                <button onClick={() => handleToggleCompleteTask(index)}>
                                     <DoneIcon />
                                 </button>
-                                <button onClick={() => editTask(index)}>
+                                <button onClick={() => handleEditTask(index)}>
                                     <EditIcon />
                                 </button>
-                                <button onClick={() => deleteTask(index)}>
+                                <button onClick={() => handleDeleteTask(index)}>
                                     <DeleteForeverIcon />
                                 </button>
                             </div>
                             <div className="priority">
                                 <select
                                     value={task.priority}
-                                    onChange={(e) => changeTaskPriority(index, e.target.value)}
+                                    onChange={(e) => handleChangeTaskPriority(index, e.target.value)}
                                 >
                                     <option value="">priority</option>
                                     <option value="low">low</option>
