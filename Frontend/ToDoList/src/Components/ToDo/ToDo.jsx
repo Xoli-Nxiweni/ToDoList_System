@@ -132,7 +132,7 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
                 {filteredTasks.map((task, index) => (
                     <div key={task.id} className={`Tasks ${task.priority}`}>
                         <div>
-                            <p style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
+                            <p style={{ textDecoration: task.completed == true ? 'line-through' : 'none' }}>
                                 {task.task}
                             </p>
                             <h6>{task.taskDate}</h6>

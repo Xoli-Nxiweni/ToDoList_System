@@ -426,7 +426,7 @@ export const authenticateUser = (username, password) => {
 };
 
 // Add a new task
-export const addTask = (name, taskDate = '', priority = 'low') => {
+export const addTask = (name, taskDate = '', priority = '') => {
   if (typeof name !== 'string' || typeof taskDate !== 'string' || typeof priority !== 'string') {
     console.error('Invalid data types provided to addTask');
     return;
@@ -456,7 +456,8 @@ export const updateTask = (id, updatedTask) => {
   try {
     // Ensure the column names match your table schema
     stmt = db.prepare('UPDATE tasks SET name = ?, completed = ?, taskDate = ?, priority = ? WHERE id = ?');
-    stmt.run([updatedTask.name || '', updatedTask.completed ? 1 : 0, updatedTask.taskDate || '', updatedTask.priority || '', id]);
+    stmt.run([updatedTask.name || '', updatedTask.completed ? 1 : 0, 
+              updatedTask.taskDate || '', updatedTask.priority || '', id]);
 
     // Verify the update
     const updated = db.exec('SELECT * FROM tasks WHERE id = ?', [id]);
@@ -465,7 +466,6 @@ export const updateTask = (id, updatedTask) => {
     } else {
       console.error('Task update verification failed: No task found with the given ID');
     }
-
     // Save changes within the try block
     saveDb();
 
