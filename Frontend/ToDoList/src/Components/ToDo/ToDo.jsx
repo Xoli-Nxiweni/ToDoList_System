@@ -16,74 +16,86 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
 
     useEffect(() => {
         const fetchTasks = async () => {
-            await initializeDb(); // Initialize DB
-            const tasksFromDb = getTasks(); // Fetch tasks
-            setTasks(tasksFromDb.map(([id, task, completed, priority, taskDate]) => ({
+            await initializeDb();
+            const tasksFromDb = await getTasks();
+            setTasks(tasksFromDb.map(({ id, name, completed, priority, taskDate }) => ({
                 id,
-                task,
+                task: name,
                 taskDate,
                 priority,
-                completed: Boolean(completed)
+                completed: Boolean(completed),
             })));
         };
         fetchTasks();
     }, []);
 
     const handleAddOrUpdateTask = async () => {
-        if (newTask.trim() === '') return;
+        if (!newTask.trim()) return;
         simulateLoading(true);
 
         if (editIndex >= 0) {
             const task = tasks[editIndex];
-            updateTask(task.id, {
+            await updateTask(task.id, {
                 name: newTask,
                 taskDate: newDate,
                 priority: newPriority,
                 completed: task.completed
             });
-            const updatedTasks = tasks.map((t, index) =>
-                index === editIndex ? { ...t, task: newTask, taskDate: newDate, priority: newPriority } : t
+            setTasks(prevTasks =>
+                prevTasks.map((t, index) =>
+                    index === editIndex ? { ...t, task: newTask, taskDate: newDate, priority: newPriority } : t
+                )
             );
-            setTasks(updatedTasks);
             setEditIndex(-1);
         } else {
             const newTaskId = await addTask(newTask, newDate, newPriority);
             setTasks([...tasks, { id: newTaskId, task: newTask, taskDate: newDate, priority: newPriority, completed: false }]);
         }
 
-        setNewTask('');
-        setNewDate('');
-        setNewPriority('');
+        clearInputFields();
         simulateLoading(false);
     };
 
-    const handleChangeTaskPriority = async (index, priority) => {
-        const task = tasks[index];
-        updateTask(task.id, {
-            name: task.task,
-            taskDate: task.taskDate,
-            priority,
-            completed: task.completed
-        });
-        const updatedTasks = tasks.map((t, i) =>
-            i === index ? { ...t, priority } : t
-        );
-        setTasks(updatedTasks);
+    const clearInputFields = () => {
+        setNewTask('');
+        setNewDate('');
+        setNewPriority('');
     };
 
     const handleToggleCompleteTask = async (index) => {
         const task = tasks[index];
-        updateTask(task.id, {
+        const updatedCompletedStatus = !task.completed;
+
+        await updateTask(task.id, {
             name: task.task,
             taskDate: task.taskDate,
             priority: task.priority,
-            completed: !task.completed
+            completed: updatedCompletedStatus ? 1 : 0,
         });
-        const updatedTasks = tasks.map((t, i) =>
-            i === index ? { ...t, completed: !t.completed } : t
+
+        setTasks(prevTasks =>
+            prevTasks.map((t, i) =>
+                i === index ? { ...t, completed: updatedCompletedStatus } : t
+            )
         );
-        setTasks(updatedTasks);
     };
+    // const handleToggleCompleteTask = async (index) => {
+    //     const task = tasks[index];
+    //     if (!task || !task.id) {
+    //         console.error("Task or Task ID is undefined:", task);
+    //         return;
+    //     }
+    
+    //     const updatedCompletedStatus = !task.completed;
+    
+    //     await updateTask(task.id, {
+    //         name: task.task,
+    //         taskDate: task.taskDate,
+    //         priority: task.priority,
+    //         completed: updatedCompletedStatus ? 1 : 0,
+    //     });
+    // };
+    
 
     const handleEditTask = (index) => {
         const task = tasks[index];
@@ -95,9 +107,21 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
 
     const handleDeleteTask = async (index) => {
         const taskId = tasks[index].id;
-        deleteTask(taskId);
-        const updatedTasks = tasks.filter((_, i) => i !== index);
-        setTasks(updatedTasks);
+        await deleteTask(taskId);
+        setTasks(prevTasks => prevTasks.filter((_, i) => i !== index));
+    };
+
+    const handleChangeTaskPriority = async (index, priority) => {
+        const task = tasks[index];
+        await updateTask(task.id, {
+            name: task.task,
+            taskDate: task.taskDate,
+            priority,
+            completed: task.completed,
+        });
+        setTasks(prevTasks =>
+            prevTasks.map((t, i) => (i === index ? { ...t, priority } : t))
+        );
     };
 
     const filteredTasks = tasks.filter(task =>
@@ -122,7 +146,7 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
                         value={newDate}
                         onChange={(e) => setNewDate(e.target.value)}
                     />
-                    <button onClick={handleAddOrUpdateTask}>
+                    <button onClick={handleAddOrUpdateTask} aria-label="Add or Update Task">
                         <IoIosAddCircleOutline className='functionIcon' />
                     </button>
                 </div>
@@ -130,22 +154,22 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
             <div className="editTasks">
                 <h1>Tasks</h1>
                 {filteredTasks.map((task, index) => (
-                    <div key={task.id} className={`Tasks ${task.priority}`}>
+                    <div key={`${task.id}-${index}`} className={`Tasks ${task.priority}`}>
                         <div>
-                            <p style={{ textDecoration: task.completed == true ? 'line-through' : 'none' }}>
+                            <p style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
                                 {task.task}
                             </p>
                             <h6>{task.taskDate}</h6>
                         </div>
                         <div className="Ops">
                             <div className="operations">
-                                <button onClick={() => handleToggleCompleteTask(index)}>
+                                <button onClick={() => handleToggleCompleteTask(index)} aria-label="Toggle Task Completion">
                                     <DoneIcon />
                                 </button>
-                                <button onClick={() => handleEditTask(index)}>
+                                <button onClick={() => handleEditTask(index)} aria-label="Edit Task">
                                     <EditIcon />
                                 </button>
-                                <button onClick={() => handleDeleteTask(index)}>
+                                <button onClick={() => handleDeleteTask(index)} aria-label="Delete Task">
                                     <DeleteForeverIcon />
                                 </button>
                             </div>
@@ -154,10 +178,10 @@ const ToDo = ({ simulateLoading, searchTerm }) => {
                                     value={task.priority}
                                     onChange={(e) => handleChangeTaskPriority(index, e.target.value)}
                                 >
-                                    <option value="">priority</option>
-                                    <option value="low">low</option>
-                                    <option value="medium">medium</option>
-                                    <option value="high">high</option>
+                                    <option value="">Priority</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
                                 </select>
                             </div>
                         </div>

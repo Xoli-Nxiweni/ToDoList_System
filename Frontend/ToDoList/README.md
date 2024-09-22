@@ -1,5 +1,4 @@
-
-# To-Do List Application
+## To-Do List Application
 
 ## Overview
 This To-Do List application allows users to manage their tasks efficiently. It includes user authentication, task management features, and a responsive design to ensure a user-friendly experience. The application supports CRUD operations for to-do items and uses SQLite for data storage.
@@ -8,7 +7,7 @@ This To-Do List application allows users to manage their tasks efficiently. It i
 
 ### Authentication
 - **Login Page**: Users can log in with their credentials.
-- **Registration Page**: New users can register with the following details:
+- **Registration Page**: New users can register with:
   - Username
   - Password
 
@@ -29,36 +28,43 @@ This To-Do List application allows users to manage their tasks efficiently. It i
 
 ## Technology Stack
 - **Frontend**: React for UI components, CSS for styling.
-- **Backend**: Node.js with Express for server-side logic.
 - **Database**: SQLite for storing user information and to-do list items.
-
 
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js
-- SQLite
+- [Node.js](https://nodejs.org/) (for running the application)
+- [SQLite](https://www.sqlite.org/download.html) (for database management)
 
 ### Installation
 1. **Clone the repository**:
-2. 
+   ```bash
    git clone https://github.com/Xoli-Nxiweni/ToDoList_System
-
    cd todo-app
-   
+   ```
 
-3. **Install dependencies**:
+2. **Install dependencies**:
+   ```bash
    npm install
+   ```
 
+   This will install the following dependencies:
+   - `@emotion/react`: ^11.13.0
+   - `@emotion/styled`: ^11.13.0
+   - `@mui/icons-material`: ^5.16.5
+   - `axios`: ^1.7.2
+   - `react`: ^18.3.1
+   - `react-dom`: ^18.3.1
+   - `react-icons`: ^5.2.1
+   - `sql.js`: ^1.11.0
 
-4. **Run the application**:
-   <!-- to run the frontend -->
-   "npm run dev" for the frontend
+3. **Run the application**:
+   - To run the frontend using Vite:
+     ```bash
+     npm run dev
+     ```
 
-    <!-- to run the server -->
-   "node server.js" for the backend
-
-   The application will be available at `http://localhost:3000`.
+   The application will be available at `http://localhost:5173`.
 
 ## Usage
 
@@ -83,3 +89,8 @@ This To-Do List application allows users to manage their tasks efficiently. It i
 - User data is protected through authentication.
 - Users can only access their own to-do lists.
 
+## Contact
+For any questions or feedback, you can reach me at:
+- **Email**: xolinxiweni@gmail.com || xolinxiweni@outlook.com
+
+---
