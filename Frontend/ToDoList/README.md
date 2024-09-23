@@ -100,7 +100,7 @@ Before setting up the application, ensure you have the following installed:
   - Passwords are validated for strength.
   - Invalid characters or empty values are not allowed in the input fields.
   - 
-##Screenshot 
+## Screenshot 
 ![Screenshot (1)](https://github.com/user-attachments/assets/77672dc9-0a68-42e0-927d-b09607caec63)
 
 
