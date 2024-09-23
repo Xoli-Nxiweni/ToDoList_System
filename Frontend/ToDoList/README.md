@@ -1,96 +1,116 @@
-## To-Do List Application
+---
+
+# To-Do List Application
 
 ## Overview
-This To-Do List application allows users to manage their tasks efficiently. It includes user authentication, task management features, and a responsive design to ensure a user-friendly experience. The application supports CRUD operations for to-do items and uses SQLite for data storage.
+This To-Do List application allows users to efficiently manage their tasks with features like user authentication, task prioritization, and a responsive design. The app supports CRUD operations for tasks and uses SQLite for data storage, ensuring a smooth and user-friendly experience.
 
 ## Features
 
-### Authentication
-- **Login Page**: Users can log in with their credentials.
-- **Registration Page**: New users can register with:
-  - Username
-  - Password
+### User Authentication
+- **Login Page**: Users can log in using their credentials.
+- **Registration Page**: New users can create an account with:
+  - A username
+  - A secure password
 
 ### Home Page
-- **To-Do List**: Displays the user's to-do list items.
+- **To-Do List**: Displays all tasks associated with the logged-in user.
 
-### To-Do List Features
-- **Search Function**: Users can search for items by keyword.
-- **Add Function**: Users can add a new item with:
-  - Task Description
-  - Priority (High, Medium, Low)
-- **Delete Function**: Users can delete existing items.
-- **Update Function**: Users can edit existing items.
-- **Priority Colors**: Items are color-coded based on priority:
-  - Red for High
-  - Yellow for Medium
-  - Green for Low
+### Task Management
+- **Search Function**: Users can search tasks by keywords.
+- **Add New Task**: Users can add tasks by providing:
+  - Task description
+  - Priority level (High, Medium, Low)
+- **Delete Task**: Users can remove tasks from their list.
+- **Update Task**: Users can edit the details of an existing task.
+- **Priority Color Coding**:
+  - Red for High priority
+  - Yellow for Medium priority
+  - Green for Low priority
 
 ## Technology Stack
-- **Frontend**: React for UI components, CSS for styling.
-- **Database**: SQLite for storing user information and to-do list items.
+
+- **Frontend**: React for building the user interface, with CSS for styling.
+- **Database**: SQLite is used for persistent storage of tasks and user data.
 
 ## Setup Instructions
 
 ### Prerequisites
+Before setting up the application, ensure you have the following installed:
 - [Node.js](https://nodejs.org/) (for running the application)
 - [SQLite](https://www.sqlite.org/download.html) (for database management)
 
 ### Installation
-1. **Clone the repository**:
+
+1. **Clone the Repository**:
    ```bash
    git clone https://github.com/Xoli-Nxiweni/ToDoList_System
    cd todo-app
    ```
 
-2. **Install dependencies**:
+2. **Switch to the Correct Branch**:
+   Checkout the `SQL.js` branch for the SQLite functionality:
+   ```bash
+   git checkout SQL.js
+   ```
+
+3. **Navigate to the Frontend Folder**:
+   Move to the folder where the frontend code is located:
+   ```bash
+   cd Frontend/ToDoList
+   ```
+
+4. **Install Dependencies**:
+   Install the required packages:
    ```bash
    npm install
    ```
 
-   This will install the following dependencies:
-   - `@emotion/react`: ^11.13.0
-   - `@emotion/styled`: ^11.13.0
-   - `@mui/icons-material`: ^5.16.5
-   - `axios`: ^1.7.2
-   - `react`: ^18.3.1
-   - `react-dom`: ^18.3.1
-   - `react-icons`: ^5.2.1
-   - `sql.js`: ^1.11.0
+   The key dependencies include:
+   - `@emotion/react`
+   - `@emotion/styled`
+   - `@mui/icons-material`
+   - `axios`
+   - `react`
+   - `react-dom`
+   - `react-icons`
+   - `sql.js`
 
-3. **Run the application**:
-   - To run the frontend using Vite:
-     ```bash
-     npm run dev
-     ```
+5. **Run the Application**:
+   Start the development server using Vite:
+   ```bash
+   npm run dev
+   ```
 
-   The application will be available at `http://localhost:5173`.
+   You can then access the application at `http://localhost:5173`.
 
 ## Usage
 
-1. **Register a new user**:
-   - Go to the Registration page and provide a username and password.
-
-2. **Log in**:
-   - Use your credentials to log in on the Login page.
-
+1. **Register**: Create an account by providing a username and password on the Registration page.
+2. **Log In**: Log in to your account using your credentials on the Login page.
 3. **Manage To-Do Items**:
-   - *Add a Task*: Enter a task description and select a priority level to add a new item.
-   - *Search Tasks*: Use the search bar to filter tasks by keyword.
-   - *Update a Task*: Edit task details including the description and priority.
-   - *Delete a Task*: Remove items from the list.
+   - *Add*: Add new tasks with a description and priority level.
+   - *Search*: Filter tasks using the search bar.
+   - *Update*: Modify the details of any existing task.
+   - *Delete*: Remove tasks from the list.
 
-## Validation
-- Ensure proper validation for input fields to prevent errors:
-  - Passwords must be validated on the backend for strength.
-  - Input fields should not accept invalid characters or empty values.
+## Input Validation
+- Input fields are validated to prevent errors:
+  - Passwords are validated for strength.
+  - Invalid characters or empty values are not allowed in the input fields.
 
-## Authentication and Authorization
-- User data is protected through authentication.
-- Users can only access their own to-do lists.
+## Authentication & Authorization
+- User data is securely protected through authentication.
+- Each user can only access and manage their own to-do lists.
 
 ## Contact
-For any questions or feedback, you can reach me at:
-- **Email**: xolinxiweni@gmail.com || xolinxiweni@outlook.com
+For any questions or feedback, please reach out via email:
+- **Email**: [xolinxiweni@gmail.com](mailto:xolinxiweni@gmail.com) | [xolinxiweni@outlook.com](mailto:xolinxiweni@outlook.com)
 
 ---
+
+### Important Note:
+To work with SQLite functionality, ensure you switch to the **SQL.js** branch or navigate to the correct folder:  
+[`Frontend/ToDoList`](https://github.com/Xoli-Nxiweni/ToDoList_System/tree/SQL.js/Frontend/ToDoList).
+
+--- 
