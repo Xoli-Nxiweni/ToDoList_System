@@ -64,6 +64,7 @@ Before setting up the application, ensure you have the following installed:
    Install the required packages:
    ```bash
    npm install
+   npm install SQL.js
    ```
 
    The key dependencies include:
